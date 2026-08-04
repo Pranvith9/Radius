@@ -144,11 +144,14 @@ export default function NearbyFeed({
             style={{
               border: 'none',
               background: 'transparent',
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
               color: 'var(--color-text-primary)',
               fontSize: '13px',
               outline: 'none',
               width: '100%',
-              fontFamily: 'var(--font-family)'
+              fontFamily: 'var(--font-family)',
+              padding: 0
             }}
           />
         </div>

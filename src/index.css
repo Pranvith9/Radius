@@ -57,7 +57,10 @@
   --color-primary-light: rgba(37, 99, 235, 0.2);
 }
 
-.dark-theme input,
+.dark-theme input {
+  color: #F8FAFC !important;
+}
+
 .dark-theme textarea,
 .dark-theme select {
   background-color: #161F30 !important;
