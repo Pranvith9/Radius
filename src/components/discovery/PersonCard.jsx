@@ -20,6 +20,7 @@ export default function PersonCard({
   return (
     <div
       onClick={() => onSelectPerson && onSelectPerson(targetPerson)}
+      className="hover-card animate-fade-up"
       style={{
         background: 'var(--color-surface)',
         borderRadius: '20px',
@@ -29,8 +30,7 @@ export default function PersonCard({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        cursor: 'pointer',
-        transition: 'transform 180ms ease, box-shadow 180ms ease'
+        cursor: 'pointer'
       }}
     >
       {/* Photo Container */}
@@ -44,6 +44,7 @@ export default function PersonCard({
         <img
           src={targetPerson.photo}
           alt={targetPerson.name}
+          className="hover-card-img"
           style={{
             width: '100%',
             height: '100%',

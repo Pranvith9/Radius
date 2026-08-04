@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import AndroidFrame from './components/layout/AndroidFrame';
 import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
@@ -13,7 +13,7 @@ import ProfileView from './components/profile/ProfileView';
 import ShortsAndPostsFeed from './components/posts/ShortsAndPostsFeed';
 import CreatePostModal from './components/posts/CreatePostModal';
 
-// Modals
+// Modals & Common Components
 import PersonDetailModal from './components/discovery/PersonDetailModal';
 import SendRequestModal from './components/requests/SendRequestModal';
 import FilterModal from './components/discovery/FilterModal';
@@ -24,21 +24,88 @@ import PhotoVerificationModal from './components/profile/PhotoVerificationModal'
 import IncomingCallModal from './components/call/IncomingCallModal';
 import CallScreen from './components/call/CallScreen';
 import AuthOnboarding from './components/auth/AuthOnboarding';
+import Toast from './components/common/Toast';
 
 // Mock Data
 import { CURRENT_USER, NEARBY_USERS, INITIAL_REQUESTS, INITIAL_CHATS, INITIAL_POSTS } from './data/mockData';
 
 const TAB_ORDER = ['nearby', 'feed', 'requests', 'chats', 'map', 'profile'];
 
+// Storage Keys
+const STORAGE_KEYS = {
+  USER: 'radius_user_state_v1',
+  REQUESTS: 'radius_requests_state_v1',
+  CHATS: 'radius_chats_state_v1',
+  POSTS: 'radius_posts_state_v1',
+  PANIC: 'radius_panic_state_v1',
+  AUTH: 'radius_auth_state_v1'
+};
+
+const getStoredItem = (key, fallback) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : fallback;
+  } catch (err) {
+    console.warn('LocalStorage read error:', err);
+    return fallback;
+  }
+};
+
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(CURRENT_USER);
+  const [currentUser, setCurrentUser] = useState(() => getStoredItem(STORAGE_KEYS.USER, CURRENT_USER));
   const [nearbyUsers, setNearbyUsers] = useState(NEARBY_USERS);
-  const [requests, setRequests] = useState(INITIAL_REQUESTS);
-  const [chats, setChats] = useState(INITIAL_CHATS);
-  const [posts, setPosts] = useState(INITIAL_POSTS);
+  const [requests, setRequests] = useState(() => getStoredItem(STORAGE_KEYS.REQUESTS, INITIAL_REQUESTS));
+  const [chats, setChats] = useState(() => getStoredItem(STORAGE_KEYS.CHATS, INITIAL_CHATS));
+  const [posts, setPosts] = useState(() => getStoredItem(STORAGE_KEYS.POSTS, INITIAL_POSTS));
+  const [panicActive, setPanicActive] = useState(() => getStoredItem(STORAGE_KEYS.PANIC, false));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => getStoredItem(STORAGE_KEYS.AUTH, false));
+
+  // Toast Notification System State
+  const [toastState, setToastState] = useState({ message: '', type: 'info', id: 0 });
+
+  const showToast = (message, type = 'info') => {
+    setToastState({ message, type, id: Date.now() });
+  };
+
+  // Sync state to LocalStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+    } catch (e) {}
+  }, [currentUser]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+    } catch (e) {}
+  }, [requests]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(chats));
+    } catch (e) {}
+  }, [chats]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
+    } catch (e) {}
+  }, [posts]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.PANIC, JSON.stringify(panicActive));
+    } catch (e) {}
+  }, [panicActive]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(isAuthenticated));
+    } catch (e) {}
+  }, [isAuthenticated]);
 
   // App Navigation & Modals State
-  const [activeTab, setActiveTab] = useState('nearby'); // 'nearby' | 'feed' | 'requests' | 'chats' | 'map' | 'profile'
+  const [activeTab, setActiveTab] = useState('nearby');
   const [previousTab, setPreviousTab] = useState('nearby');
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [requestPerson, setRequestPerson] = useState(null);
@@ -67,8 +134,6 @@ export default function App() {
   const [isRadiusOpen, setIsRadiusOpen] = useState(false);
   const [isVerificationOpen, setIsVerificationOpen] = useState(false);
   const [isSafetyTipsOpen, setIsSafetyTipsOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [panicActive, setPanicActive] = useState(false);
 
   // Filter State
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -159,10 +224,13 @@ export default function App() {
 
   const handleUpdateUser = (updates) => {
     setCurrentUser((prev) => ({ ...prev, ...updates }));
+    showToast('Profile updated successfully', 'success');
   };
 
   const handleToggleVisibility = () => {
-    setCurrentUser((prev) => ({ ...prev, visibility: !prev.visibility, isVerified: true }));
+    const nextVis = !currentUser.visibility;
+    setCurrentUser((prev) => ({ ...prev, visibility: nextVis, isVerified: true }));
+    showToast(nextVis ? 'You are now visible to nearby users' : 'Stealth mode active — location hidden', nextVis ? 'info' : 'warning');
   };
 
   const handlePanicToggle = () => {
@@ -170,6 +238,9 @@ export default function App() {
       const next = !prev;
       if (next) {
         setCurrentUser((c) => ({ ...c, visibility: false }));
+        showToast('Panic Stealth Activated: Location hidden from everyone', 'warning');
+      } else {
+        showToast('Stealth mode deactivated', 'info');
       }
       return next;
     });
@@ -185,6 +256,7 @@ export default function App() {
       status: 'pending'
     };
     setRequests((prev) => [newReq, ...prev]);
+    showToast(`Connection request sent to ${targetPerson.name}!`, 'success');
 
     if (targetPerson.id === 'usr_001') {
       setTimeout(() => {
@@ -199,6 +271,7 @@ export default function App() {
     if (existingChat) {
       handleSelectChat(existingChat);
       setActiveTab('chats');
+      showToast(`Connected with ${request.sender.name}!`, 'success');
       return;
     }
 
@@ -222,10 +295,12 @@ export default function App() {
     setChats((prev) => [newChat, ...prev]);
     setActiveChat(newChat);
     setActiveTab('chats');
+    showToast(`Connected with ${request.sender.name}! Chat unlocked.`, 'success');
   };
 
   const handleDeclineRequest = (request) => {
     setRequests((prev) => prev.filter((r) => r.id !== request.id));
+    showToast('Connection request declined', 'info');
   };
 
   const handleSendMessage = (chatId, textOrPayload) => {
@@ -291,6 +366,7 @@ export default function App() {
   // Create New Post
   const handleCreatePost = (newPost) => {
     setPosts((prev) => [newPost, ...prev]);
+    showToast('Post published to feed!', 'success');
   };
 
   const handleStartCall = (chatId, partner, type) => {
@@ -345,6 +421,7 @@ export default function App() {
     if (activeChat && activeChat.id === chatId) {
       setActiveChat((prev) => ({ ...prev, status: 'unmatched' }));
     }
+    showToast('Unmatched successfully', 'info');
   };
 
   const handleBlockUser = (targetUser, reason = '', details = '') => {
@@ -359,6 +436,7 @@ export default function App() {
     if (incomingCall && incomingCall.caller.id === userId) setIncomingCall(null);
     setSelectedPerson(null);
     setRequestPerson(null);
+    showToast(`Blocked ${targetUser.name}`, 'warning');
   };
 
   const appTheme = currentUser?.theme || 'dark';
@@ -366,6 +444,12 @@ export default function App() {
   if (!isAuthenticated) {
     return (
       <AndroidFrame theme={appTheme}>
+        <Toast
+          message={toastState.message}
+          type={toastState.type}
+          key={toastState.id}
+          onClose={() => setToastState({ message: '', type: 'info', id: 0 })}
+        />
         <AuthOnboarding
           existingUsers={[currentUser, ...nearbyUsers]}
           onCompleteAuth={(authData) => {
@@ -410,6 +494,7 @@ export default function App() {
 
             setIsAuthenticated(true);
             setActiveTab('nearby');
+            showToast('Welcome to Radius! You are logged in.', 'success');
           }}
         />
       </AndroidFrame>
@@ -418,6 +503,13 @@ export default function App() {
 
   return (
     <AndroidFrame theme={appTheme}>
+      {/* Toast Banner Overlay */}
+      <Toast
+        message={toastState.message}
+        type={toastState.type}
+        key={toastState.id}
+        onClose={() => setToastState({ message: '', type: 'info', id: 0 })}
+      />
 
       {/* Show Top App Header when NOT on Profile tab and NOT in an active chat */}
       {activeTab !== 'profile' && !activeChat && (
@@ -523,7 +615,10 @@ export default function App() {
             onTogglePanic={handlePanicToggle}
             onSelectPerson={(person) => setSelectedPerson(person)}
             onBack={() => setActiveTab(previousTab || 'nearby')}
-            onLogout={() => setIsAuthenticated(false)}
+            onLogout={() => {
+              setIsAuthenticated(false);
+              showToast('Logged out', 'info');
+            }}
             userPosts={posts.filter((p) => p.author.id === currentUser.id)}
             onOpenCreatePost={handleOpenCreatePost}
           />
@@ -622,6 +717,7 @@ export default function App() {
         onClose={() => setIsVerificationOpen(false)}
         onCompleteVerification={() => {
           handleUpdateUser({ isVerified: true, visibility: true });
+          showToast('Photo verification completed! Verified badge granted.', 'success');
         }}
       />
 

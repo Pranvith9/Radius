@@ -44,7 +44,7 @@ export default function BottomNav({ activeTab, onTabChange, pendingRequestsCount
               transition: 'color 150ms ease'
             }}
           >
-            <div style={{ position: 'relative' }}>
+            <div className={isActive ? 'tab-active-pop' : ''} style={{ position: 'relative' }}>
               <Icon size={20} strokeWidth={isActive ? 2.3 : 1.8} />
               {tab.badge > 0 && (
                 <span style={{

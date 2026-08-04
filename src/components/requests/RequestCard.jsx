@@ -140,6 +140,7 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleCardClick}
+        className="request-card animate-fade-up"
         style={{
           transform: `translateX(${swipeOffset}px)`,
           transition: isSwiping ? 'none' : 'transform 200ms ease, background 200ms ease',
