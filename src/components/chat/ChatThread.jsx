@@ -612,6 +612,7 @@ export default function ChatThread({
           return (
             <div
               key={msg.id}
+              className="animate-fade-up"
               style={{
                 alignSelf: isOwn ? 'flex-end' : 'flex-start',
                 maxWidth: '82%',

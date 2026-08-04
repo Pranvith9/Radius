@@ -24,6 +24,7 @@ import PhotoVerificationModal from './components/profile/PhotoVerificationModal'
 import IncomingCallModal from './components/call/IncomingCallModal';
 import CallScreen from './components/call/CallScreen';
 import AuthOnboarding from './components/auth/AuthOnboarding';
+import MatchCelebrationModal from './components/discovery/MatchCelebrationModal';
 
 // Mock Data
 import { CURRENT_USER, NEARBY_USERS, INITIAL_REQUESTS, INITIAL_CHATS, INITIAL_POSTS } from './data/mockData';
@@ -69,6 +70,21 @@ export default function App() {
   const [isSafetyTipsOpen, setIsSafetyTipsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [panicActive, setPanicActive] = useState(false);
+
+  // Delight States
+  const [celebrationMatch, setCelebrationMatch] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const toastTimeoutRef = useRef(null);
+
+  const showToast = (message) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    setToastMessage(message);
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 3000);
+  };
 
   // Filter State
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -162,7 +178,15 @@ export default function App() {
   };
 
   const handleToggleVisibility = () => {
-    setCurrentUser((prev) => ({ ...prev, visibility: !prev.visibility, isVerified: true }));
+    setCurrentUser((prev) => {
+      const nextVisible = !prev.visibility;
+      if (nextVisible) {
+        showToast("Proximity discoverability enabled. 📡");
+      } else {
+        showToast("Visibility turned off. Profile hidden.");
+      }
+      return { ...prev, visibility: nextVisible, isVerified: true };
+    });
   };
 
   const handlePanicToggle = () => {
@@ -170,6 +194,9 @@ export default function App() {
       const next = !prev;
       if (next) {
         setCurrentUser((c) => ({ ...c, visibility: false }));
+        showToast("Panic Pause active. Profile hidden instantly. 🛡️");
+      } else {
+        showToast("Panic Pause disabled. Proximity discovery ready.");
       }
       return next;
     });
@@ -186,6 +213,8 @@ export default function App() {
     };
     setRequests((prev) => [newReq, ...prev]);
 
+    showToast(`Consent request sent to ${targetPerson.name.split(' ')[0]}! 💬`);
+
     if (targetPerson.id === 'usr_001') {
       setTimeout(() => {
         handleAcceptRequest(newReq);
@@ -197,8 +226,7 @@ export default function App() {
     setRequests((prev) => prev.filter((r) => r.id !== request.id));
     const existingChat = chats.find((c) => c.matchUser.id === request.sender.id);
     if (existingChat) {
-      handleSelectChat(existingChat);
-      setActiveTab('chats');
+      setCelebrationMatch({ chat: existingChat, partner: request.sender });
       return;
     }
 
@@ -220,8 +248,7 @@ export default function App() {
     };
 
     setChats((prev) => [newChat, ...prev]);
-    setActiveChat(newChat);
-    setActiveTab('chats');
+    setCelebrationMatch({ chat: newChat, partner: request.sender });
   };
 
   const handleDeclineRequest = (request) => {
@@ -610,6 +637,7 @@ export default function App() {
         onClose={() => setIsVerificationOpen(false)}
         onCompleteVerification={() => {
           handleUpdateUser({ isVerified: true, visibility: true });
+          showToast("Profile verified successfully! ✨");
         }}
       />
 
@@ -632,6 +660,30 @@ export default function App() {
           onEndCall={handleEndCall}
           onBlockUser={(user) => setReportUser(user)}
         />
+      )}
+
+      {/* Match Celebration Modal overlay */}
+      {celebrationMatch && (
+        <MatchCelebrationModal
+          isOpen={!!celebrationMatch}
+          partner={celebrationMatch.partner}
+          currentUser={currentUser}
+          onStartChat={() => {
+            handleSelectChat(celebrationMatch.chat);
+            setActiveTab('chats');
+            setCelebrationMatch(null);
+          }}
+          onKeepExploring={() => setCelebrationMatch(null)}
+        />
+      )}
+
+      {/* Dynamic Toast feedback element */}
+      {toastMessage && (
+        <div className="toast-container">
+          <div className="toast-alert">
+            {toastMessage}
+          </div>
+        </div>
       )}
     </AndroidFrame>
   );

@@ -23,6 +23,28 @@ export default function NearbyFeed({
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Scanning state for turning visibility ON
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanningMessage, setScanningMessage] = useState('Syncing subsea coordinates...');
+
+  const handleTurnOnVisibility = () => {
+    setIsScanning(true);
+    setScanningMessage('Establishing secure subsea node connection...');
+    
+    setTimeout(() => {
+      setScanningMessage('Syncing coarse proximity coordinates...');
+    }, 600);
+    
+    setTimeout(() => {
+      setScanningMessage('Loading verified nearby connections...');
+    }, 1200);
+
+    setTimeout(() => {
+      setIsScanning(false);
+      onToggleVisibility();
+    }, 1800);
+  };
+
   const handleRefresh = () => {
     setIsRefreshing(true);
     onRefreshFeed();
@@ -42,6 +64,59 @@ export default function NearbyFeed({
     );
   });
 
+  // Radar Visual for Scanning Transition
+  if (isScanning) {
+    return (
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '30px 24px',
+        textAlign: 'center',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text-primary)'
+      }}>
+        <div className="sonar-container">
+          <div className="sonar-pulse-ring" />
+          <div className="sonar-pulse-ring" style={{ animationDelay: '1.33s' }} />
+          <div className="sonar-pulse-ring" style={{ animationDelay: '2.66s' }} />
+          <div className="sonar-radar-line" />
+          <div style={{
+            position: 'absolute',
+            width: '84px',
+            height: '84px',
+            borderRadius: '50%',
+            background: 'rgba(37, 99, 235, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#2563EB',
+            zIndex: 2
+          }}>
+            <RefreshCw size={36} className="pulse-ring-active" style={{ animation: 'spin 2s linear infinite' }} />
+          </div>
+        </div>
+
+        <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
+          Discovering Nearby...
+        </h3>
+
+        <p className="animate-fade-in" key={scanningMessage} style={{
+          fontSize: '13px',
+          color: 'var(--color-text-secondary)',
+          lineHeight: '20px',
+          maxWidth: '300px',
+          fontFamily: 'var(--font-family)',
+          marginTop: '4px'
+        }}>
+          {scanningMessage}
+        </p>
+      </div>
+    );
+  }
+
   // Dedicated Hidden Mode Front Screen when Discoverability is OFF or Panic Active
   if (!currentUser.visibility || panicActive) {
     return (
@@ -56,19 +131,23 @@ export default function NearbyFeed({
         background: 'var(--color-bg)',
         color: 'var(--color-text-primary)'
       }}>
-        <div style={{
-          width: '84px',
-          height: '84px',
-          borderRadius: '50%',
-          background: panicActive ? 'rgba(239, 68, 68, 0.15)' : 'rgba(37, 99, 235, 0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: panicActive ? '#EF4444' : '#2563EB',
-          marginBottom: '20px',
-          boxShadow: '0 10px 25px rgba(37, 99, 235, 0.15)'
-        }}>
-          {panicActive ? <ShieldAlert size={42} /> : <EyeOff size={42} />}
+        <div className="sonar-container">
+          <div className="sonar-pulse-ring" style={{ animation: 'none', borderStyle: 'solid', opacity: 0.08 }} />
+          <div style={{
+            position: 'absolute',
+            width: '84px',
+            height: '84px',
+            borderRadius: '50%',
+            background: panicActive ? 'rgba(239, 68, 68, 0.12)' : 'rgba(37, 99, 235, 0.12)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: panicActive ? '#EF4444' : '#2563EB',
+            boxShadow: panicActive ? '0 10px 25px rgba(239, 68, 68, 0.12)' : '0 10px 25px rgba(37, 99, 235, 0.12)',
+            zIndex: 2
+          }}>
+            {panicActive ? <ShieldAlert size={42} /> : <EyeOff size={42} />}
+          </div>
         </div>
 
         <h3 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
@@ -89,7 +168,7 @@ export default function NearbyFeed({
 
         {!panicActive && (
           <button
-            onClick={onToggleVisibility}
+            onClick={handleTurnOnVisibility}
             className="btn btn-primary"
             style={{
               padding: '12px 24px',

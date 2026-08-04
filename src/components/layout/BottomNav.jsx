@@ -41,11 +41,16 @@ export default function BottomNav({ activeTab, onTabChange, pendingRequestsCount
               cursor: 'pointer',
               color: isActive ? '#2563EB' : 'var(--color-text-secondary)',
               position: 'relative',
-              transition: 'color 150ms ease'
+              transition: 'color 150ms ease',
+              paddingBottom: '6px'
             }}
           >
-            <div style={{ position: 'relative' }}>
-              <Icon size={20} strokeWidth={isActive ? 2.3 : 1.8} />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon 
+                size={20} 
+                strokeWidth={isActive ? 2.3 : 1.8} 
+                className={isActive ? 'nav-icon-active' : ''} 
+              />
               {tab.badge > 0 && (
                 <span style={{
                   position: 'absolute',
@@ -74,6 +79,17 @@ export default function BottomNav({ activeTab, onTabChange, pendingRequestsCount
             }}>
               {tab.label}
             </span>
+            {isActive && (
+              <span style={{
+                position: 'absolute',
+                bottom: '2px',
+                width: '4px',
+                height: '4px',
+                borderRadius: '50%',
+                background: '#2563EB',
+                animation: 'fade-in 200ms ease-out forwards'
+              }} />
+            )}
           </button>
         );
       })}

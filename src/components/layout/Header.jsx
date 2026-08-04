@@ -107,12 +107,14 @@ export default function Header({
           <img
             src={currentUser.photo}
             alt={currentUser.name}
+            className={currentUser.visibility && !panicActive ? 'avatar-visible-pulse' : ''}
             style={{
               width: '34px',
               height: '34px',
               borderRadius: '50%',
               objectFit: 'cover',
-              border: '2px solid #2563EB'
+              border: '2px solid #2563EB',
+              boxShadow: currentUser.visibility && !panicActive ? undefined : '0 1px 3px rgba(0,0,0,0.1)'
             }}
           />
           {currentUser.isVerified && (

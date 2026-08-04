@@ -1,0 +1,143 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  name               String
+  dob                DateTime
+  photoUrl           String
+  bio                String?
+  interests          String              // Comma-separated or JSON list of interests
+  visibility         Boolean             @default(false)
+  isVerified         Boolean             @default(false)
+  phoneVerified      Boolean             @default(false)
+  phone              String?
+  radius             String              @default("5 km")
+  readReceipts       Boolean             @default(true)
+  vacationMode       Boolean             @default(false)
+  
+  // Location
+  latitude           Float?
+  longitude          Float?
+  geohash            String?             // Coarse geohash
+  locationUpdatedAt  DateTime?
+
+  // Relations
+  sentRequests       ConnectionRequest[] @relation("SentRequests")
+  receivedRequests   ConnectionRequest[] @relation("ReceivedRequests")
+  matchesAsUserA     Match[]             @relation("MatchesAsUserA")
+  matchesAsUserB     Match[]             @relation("MatchesAsUserB")
+  posts              Post[]
+  likes              Like[]
+  comments           Comment[]
+  sessions           Session[]
+  permissions        Permission[]
+  reportsSent        Report[]            @relation("ReportsSent")
+  reportsReceived    Report[]            @relation("ReportsReceived")
+  
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId         String
+  refreshTokenHash String
+  ip               String?
+  userAgent        String?
+  createdAt        DateTime @default(now())
+  lastActiveAt     DateTime @default(now())
+  revokedAt        DateTime?
+}
+
+model Permission {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionType String   // location, camera, mic, notifications
+  granted        Boolean
+  updatedAt      DateTime @updatedAt
+  
+  @@unique([userId, permissionType])
+}
+
+model ConnectionRequest {
+  id           String   @id @default(uuid())
+  senderId     String
+  sender       User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId   String
+  receiver     User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  introMessage String?  // Max 100 chars
+  status       String   // pending, accepted, declined, expired
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  userAId   String
+  userA     User     @relation("MatchesAsUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId   String
+  userB     User     @relation("MatchesAsUserB", fields: [userBId], references: [id], onDelete: Cascade)
+  status    String   // active, unmatched
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userAId, userBId])
+}
+
+model Post {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaUrls      String    // JSON stringified array of URLs
+  caption        String?
+  visibility     String    // public, connections
+  likeCount      Int       @default(0)
+  commentCount   Int       @default(0)
+  createdAt      DateTime  @default(now())
+  likes          Like[]
+  comments       Comment[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reporterId String
+  reporter   User     @relation("ReportsSent", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId String
+  reported   User     @relation("ReportsReceived", fields: [reportedId], references: [id], onDelete: Cascade)
+  reason     String
+  details    String?
+  status     String   // pending, resolved
+  createdAt  DateTime @default(now())
+}
