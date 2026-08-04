@@ -31,34 +31,21 @@ import { CURRENT_USER, NEARBY_USERS, INITIAL_REQUESTS, INITIAL_CHATS, INITIAL_PO
 
 const TAB_ORDER = ['nearby', 'feed', 'requests', 'chats', 'map', 'profile'];
 
-// Storage Keys
-const STORAGE_KEYS = {
-  USER: 'radius_user_state_v1',
-  REQUESTS: 'radius_requests_state_v1',
-  CHATS: 'radius_chats_state_v1',
-  POSTS: 'radius_posts_state_v1',
-  PANIC: 'radius_panic_state_v1',
-  AUTH: 'radius_auth_state_v1'
-};
-
-const getStoredItem = (key, fallback) => {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : fallback;
-  } catch (err) {
-    console.warn('LocalStorage read error:', err);
-    return fallback;
-  }
-};
-
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(() => getStoredItem(STORAGE_KEYS.USER, CURRENT_USER));
+  const [currentUser, setCurrentUser] = useState(CURRENT_USER);
   const [nearbyUsers, setNearbyUsers] = useState(NEARBY_USERS);
-  const [requests, setRequests] = useState(() => getStoredItem(STORAGE_KEYS.REQUESTS, INITIAL_REQUESTS));
-  const [chats, setChats] = useState(() => getStoredItem(STORAGE_KEYS.CHATS, INITIAL_CHATS));
-  const [posts, setPosts] = useState(() => getStoredItem(STORAGE_KEYS.POSTS, INITIAL_POSTS));
-  const [panicActive, setPanicActive] = useState(() => getStoredItem(STORAGE_KEYS.PANIC, false));
-  const [isAuthenticated, setIsAuthenticated] = useState(() => getStoredItem(STORAGE_KEYS.AUTH, false));
+  const [requests, setRequests] = useState(INITIAL_REQUESTS);
+  const [chats, setChats] = useState(INITIAL_CHATS);
+  const [posts, setPosts] = useState(INITIAL_POSTS);
+  const [panicActive, setPanicActive] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Clear any existing localStorage data on mount so state is always clean & normal
+  useEffect(() => {
+    try {
+      localStorage.clear();
+    } catch (e) {}
+  }, []);
 
   // Toast Notification System State
   const [toastState, setToastState] = useState({ message: '', type: 'info', id: 0 });
@@ -66,43 +53,6 @@ export default function App() {
   const showToast = (message, type = 'info') => {
     setToastState({ message, type, id: Date.now() });
   };
-
-  // Sync state to LocalStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-    } catch (e) {}
-  }, [currentUser]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
-    } catch (e) {}
-  }, [requests]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(chats));
-    } catch (e) {}
-  }, [chats]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
-    } catch (e) {}
-  }, [posts]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.PANIC, JSON.stringify(panicActive));
-    } catch (e) {}
-  }, [panicActive]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(isAuthenticated));
-    } catch (e) {}
-  }, [isAuthenticated]);
 
   // App Navigation & Modals State
   const [activeTab, setActiveTab] = useState('nearby');
@@ -266,36 +216,33 @@ export default function App() {
   };
 
   const handleAcceptRequest = (request) => {
-    setRequests((prev) => prev.filter((r) => r.id !== request.id));
+    // Mark request as accepted in local requests state so card remains with "Chat Now" button below
+    setRequests((prev) =>
+      prev.map((r) => (r.id === request.id ? { ...r, status: 'accepted' } : r))
+    );
+
     const existingChat = chats.find((c) => c.matchUser.id === request.sender.id);
-    if (existingChat) {
-      handleSelectChat(existingChat);
-      setActiveTab('chats');
-      showToast(`Connected with ${request.sender.name}!`, 'success');
-      return;
+    if (!existingChat) {
+      const newChat = {
+        id: `chat_${Date.now()}`,
+        matchUser: request.sender,
+        createdAt: 'Just now',
+        status: 'active',
+        messages: [
+          {
+            id: `m_${Date.now()}`,
+            senderId: request.sender.id,
+            text: request.introMessage || `Hey ${currentUser.name.split(' ')[0]}! Excited to connect nearby!`,
+            sentAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            read: false
+          }
+        ],
+        callLogs: []
+      };
+      setChats((prev) => [newChat, ...prev]);
     }
 
-    const newChat = {
-      id: `chat_${Date.now()}`,
-      matchUser: request.sender,
-      createdAt: 'Just now',
-      status: 'active',
-      messages: [
-        {
-          id: `m_${Date.now()}`,
-          senderId: request.sender.id,
-          text: request.introMessage || `Hey ${currentUser.name.split(' ')[0]}! Excited to connect nearby!`,
-          sentAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          read: false
-        }
-      ],
-      callLogs: []
-    };
-
-    setChats((prev) => [newChat, ...prev]);
-    setActiveChat(newChat);
-    setActiveTab('chats');
-    showToast(`Connected with ${request.sender.name}! Chat unlocked.`, 'success');
+    showToast(`Request accepted! Press 'Chat Now' below to open chat.`, 'success');
   };
 
   const handleDeclineRequest = (request) => {
@@ -581,6 +528,7 @@ export default function App() {
             onAcceptRequest={handleAcceptRequest}
             onDeclineRequest={handleDeclineRequest}
             onBlockUser={(user) => setReportUser(user)}
+            onOpenChat={handleOpenChatWithPerson}
           />
         )}
 

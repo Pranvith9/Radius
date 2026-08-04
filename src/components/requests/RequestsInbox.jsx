@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import RequestCard from './RequestCard';
 import { UserPlus, Inbox, ShieldCheck, Search, X } from 'lucide-react';
 
-export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequest, onBlockUser }) {
+export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequest, onBlockUser, onOpenChat }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredRequests = requests.filter((req) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
     const nameMatch = req.sender?.name?.toLowerCase().includes(query);
-    const noteMatch = req.note?.toLowerCase().includes(query);
+    const noteMatch = req.introMessage?.toLowerCase().includes(query);
     const interestMatch = req.sender?.interests?.some((i) => i.toLowerCase().includes(query));
     return nameMatch || noteMatch || interestMatch;
   });
+
+  const pendingCount = requests.filter((r) => r.status !== 'accepted').length;
 
   return (
     <div style={{
@@ -35,7 +37,7 @@ export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequ
           </p>
         </div>
 
-        {requests.length > 0 && (
+        {pendingCount > 0 && (
           <span style={{
             background: 'var(--color-primary-light)',
             color: 'var(--color-primary-hover)',
@@ -45,7 +47,7 @@ export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequ
             borderRadius: '9999px',
             border: '1px solid rgba(251, 146, 60, 0.3)'
           }}>
-            {requests.length} Pending
+            {pendingCount} Pending
           </span>
         )}
       </div>
@@ -125,6 +127,7 @@ export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequ
                 onAccept={onAcceptRequest}
                 onDecline={onDeclineRequest}
                 onBlock={onBlockUser}
+                onOpenChat={onOpenChat}
               />
             ))}
           </div>
@@ -163,7 +166,7 @@ export default function RequestsInbox({ requests, onAcceptRequest, onDeclineRequ
             <Inbox size={32} />
           </div>
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-            No Pending Requests
+            No Connection Requests
           </h3>
           <p style={{ fontSize: '13px', maxWidth: '280px', lineHeight: '18px' }}>
             When people nearby send you connection requests, they will appear here.

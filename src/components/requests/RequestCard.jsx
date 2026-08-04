@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Clock, ShieldAlert, X, MapPin, Check, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
+import { Clock, ShieldAlert, X, MapPin, Check, ChevronDown, ChevronUp, MessageSquare, CheckCircle2 } from 'lucide-react';
 
-export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
-  const { sender, introMessage, expiresInDays } = request;
+export default function RequestCard({ request, onAccept, onDecline, onBlock, onOpenChat }) {
+  const { sender, introMessage, expiresInDays, status = 'pending' } = request;
+  const isAccepted = status === 'accepted';
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -13,13 +15,14 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
 
   // Touch Event Handlers
   const handleTouchStart = (e) => {
+    if (isAccepted) return;
     startXRef.current = e.touches[0].clientX;
     hasDraggedRef.current = false;
     setIsSwiping(true);
   };
 
   const handleTouchMove = (e) => {
-    if (!isSwiping) return;
+    if (!isSwiping || isAccepted) return;
     const currentX = e.touches[0].clientX;
     const diffX = currentX - startXRef.current;
     if (Math.abs(diffX) > 5) {
@@ -29,12 +32,14 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
   };
 
   const handleTouchEnd = () => {
-    if (!isSwiping) return;
+    if (!isSwiping || isAccepted) return;
     setIsSwiping(false);
     if (swipeOffset > SWIPE_THRESHOLD) {
       onAccept(request);
+      setSwipeOffset(0);
     } else if (swipeOffset < -SWIPE_THRESHOLD) {
       onDecline(request);
+      setSwipeOffset(0);
     } else {
       setSwipeOffset(0);
     }
@@ -42,13 +47,14 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
 
   // Mouse Drag Event Handlers for Desktop
   const handleMouseDown = (e) => {
+    if (isAccepted) return;
     startXRef.current = e.clientX;
     hasDraggedRef.current = false;
     setIsSwiping(true);
   };
 
   const handleMouseMove = (e) => {
-    if (!isSwiping) return;
+    if (!isSwiping || isAccepted) return;
     const diffX = e.clientX - startXRef.current;
     if (Math.abs(diffX) > 5) {
       hasDraggedRef.current = true;
@@ -57,24 +63,124 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
   };
 
   const handleMouseUp = () => {
-    if (!isSwiping) return;
+    if (!isSwiping || isAccepted) return;
     setIsSwiping(false);
     if (swipeOffset > SWIPE_THRESHOLD) {
       onAccept(request);
+      setSwipeOffset(0);
     } else if (swipeOffset < -SWIPE_THRESHOLD) {
       onDecline(request);
+      setSwipeOffset(0);
     } else {
       setSwipeOffset(0);
     }
   };
 
   const handleCardClick = () => {
-    // Only toggle expansion if the user pressed/tapped without sliding
     if (!hasDraggedRef.current && Math.abs(swipeOffset) < 10) {
       setIsExpanded((prev) => !prev);
     }
   };
 
+  // IF ACCEPTED: Render accepted state with Chat Now button below
+  if (isAccepted) {
+    return (
+      <div
+        style={{
+          background: 'var(--color-surface)',
+          borderRadius: '16px',
+          border: '1.5px solid #10B981',
+          borderLeft: '5px solid #10B981',
+          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.12)',
+          padding: '14px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
+            <img
+              src={sender.photo}
+              alt={sender.name}
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2px solid #10B981',
+                flexShrink: 0
+              }}
+            />
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                  {sender.name}, {sender.age}
+                </h4>
+                <span style={{
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  background: '#DCFCE7',
+                  color: '#15803D',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}>
+                  <CheckCircle2 size={11} color="#15803D" /> Accepted
+                </span>
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                Connected! Consent granted to message & call.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Intro Message Preview */}
+        {introMessage && (
+          <div style={{
+            background: 'var(--color-bg)',
+            borderRadius: '8px',
+            padding: '8px 10px',
+            fontSize: '12px',
+            color: 'var(--color-text-primary)',
+            fontStyle: 'italic'
+          }}>
+            "{introMessage}"
+          </div>
+        )}
+
+        {/* CHAT NOW BUTTON BELOW ON THE CARD */}
+        <button
+          onClick={() => onOpenChat && onOpenChat(sender)}
+          className="btn btn-primary"
+          style={{
+            width: '100%',
+            padding: '10px 16px',
+            fontSize: '14px',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: '#2563EB',
+            color: '#FFFFFF',
+            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.35)',
+            borderRadius: '12px',
+            marginTop: '2px'
+          }}
+        >
+          <MessageSquare size={16} />
+          <span>Chat Now</span>
+        </button>
+      </div>
+    );
+  }
+
+  // PENDING REQUEST CARD WITH SWIPE TO ACCEPT / DECLINE
   return (
     <div
       style={{
@@ -140,13 +246,14 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleCardClick}
-        className="request-card animate-fade-up"
+        className="request-card"
         style={{
           transform: `translateX(${swipeOffset}px)`,
           transition: isSwiping ? 'none' : 'transform 200ms ease, background 200ms ease',
           background: 'var(--color-surface)',
           borderRadius: '16px',
           border: '1px solid var(--color-border)',
+          borderLeft: '4px solid var(--color-primary)',
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
           padding: '12px 14px',
           cursor: 'pointer',
@@ -286,7 +393,7 @@ export default function RequestCard({ request, onAccept, onDecline, onBlock }) {
                 className="btn btn-primary"
                 style={{ flex: 1, padding: '8px', fontSize: '12px' }}
               >
-                <Check size={14} /> Accept & Chat
+                <Check size={14} /> Accept Request
               </button>
 
               <button
