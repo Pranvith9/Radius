@@ -3,33 +3,18 @@ import {
   X,
   Palette,
   ShieldCheck,
-  Lock,
-  Eye,
-  EyeOff,
-  Sun,
-  Moon,
-  Sparkles,
-  Smartphone,
-  Key,
-  Bell,
   MapPin,
+  Bell,
   ShieldAlert,
-  Download,
-  Trash2,
-  LogOut,
+  Sliders,
   ChevronRight,
-  ChevronDown,
-  Check,
   CheckCircle,
   AlertTriangle,
-  Fingerprint,
-  Radio,
-  Sliders,
   RefreshCw,
-  UserCheck,
-  Shield,
-  Layers,
-  Monitor
+  Eye,
+  EyeOff,
+  LogOut,
+  Trash2
 } from 'lucide-react';
 
 export default function AccountSettingsModal({
@@ -73,7 +58,6 @@ export default function AccountSettingsModal({
   const [pushNotifications, setPushNotifications] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
-  const [matchAlerts, setMatchAlerts] = useState(true);
 
   // Data & Cache local state
   const [cacheCleared, setCacheCleared] = useState(false);
@@ -129,7 +113,6 @@ export default function AccountSettingsModal({
       return;
     }
 
-    // Success simulation
     setPasswordSuccessMsg('Password updated successfully!');
     setCurrentPassword('');
     setNewPassword('');
@@ -142,7 +125,6 @@ export default function AccountSettingsModal({
     setTimeout(() => {
       setDownloadingData(false);
       setDownloadSuccess(true);
-      // Trigger small mock JSON file download
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentUser, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
@@ -266,7 +248,7 @@ export default function AccountSettingsModal({
         {/* Scrollable Content Container */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
-          {/* MAIN MENU LIST OF SECTIONS */}
+          {/* MAIN MENU LIST OF SECTIONS WITH HUMANIZED ICON BADGES */}
           {activeSection === 'menu' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
@@ -283,22 +265,20 @@ export default function AccountSettingsModal({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 150ms ease'
+                  textAlign: 'left'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #A855F7 0%, #6366F1 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(99, 102, 241, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <Palette size={22} />
+                    <Palette size={20} color="#6366F1" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -312,7 +292,7 @@ export default function AccountSettingsModal({
                 <ChevronRight size={18} color="var(--color-text-muted)" />
               </button>
 
-              {/* 🔐 2. Security & Privacy / App Security Button */}
+              {/* 🔐 2. Safety & Privacy Button */}
               <button
                 onClick={() => setActiveSection('security')}
                 style={{
@@ -325,22 +305,20 @@ export default function AccountSettingsModal({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 150ms ease'
+                  textAlign: 'left'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(37, 99, 235, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <ShieldCheck size={22} />
+                    <ShieldCheck size={20} color="#2563EB" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -372,16 +350,15 @@ export default function AccountSettingsModal({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(14, 165, 233, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <MapPin size={22} />
+                    <MapPin size={20} color="#0EA5E9" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -413,16 +390,15 @@ export default function AccountSettingsModal({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(245, 158, 11, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <Bell size={22} />
+                    <Bell size={20} color="#F59E0B" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -454,16 +430,15 @@ export default function AccountSettingsModal({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #EF4444 0%, #B91C1C 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(239, 68, 68, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <ShieldAlert size={22} />
+                    <ShieldAlert size={20} color="#EF4444" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -495,16 +470,15 @@ export default function AccountSettingsModal({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #64748B 0%, #334155 100%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(100, 116, 139, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF'
+                    justifyContent: 'center'
                   }}>
-                    <Sliders size={22} />
+                    <Sliders size={20} color="#64748B" />
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
@@ -550,68 +524,56 @@ export default function AccountSettingsModal({
             </div>
           )}
 
-          {/* 🎨 PERSONALIZATION SUB-SECTION */}
+          {/* 🎨 PERSONALIZATION SUB-SECTION (TEXT ONLY OPTIONS, NO INNER ICONS) */}
           {activeSection === 'personalization' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
-              {/* 1. App Display Themes */}
+              {/* 1. Display Themes */}
               <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Sun size={16} color="#2563EB" /> Display Themes
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
+                  Display Themes
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  {/* Light Mode */}
+                  {/* Light Mode - TEXT ONLY */}
                   <div
                     onClick={() => onUpdateUser({ theme: 'light' })}
                     style={{
-                      padding: '12px',
+                      padding: '14px 16px',
                       borderRadius: '14px',
                       border: currentTheme === 'light' ? '2px solid #2563EB' : '1px solid var(--color-border)',
                       background: currentTheme === 'light' ? '#DBEAFE' : 'var(--color-bg)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                      cursor: 'pointer'
                     }}
                   >
-                    <Sun size={18} color={currentTheme === 'light' ? '#1E40AF' : 'var(--color-text-secondary)'} />
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: currentTheme === 'light' ? '#1E40AF' : 'var(--color-text-primary)' }}>
-                        Light Mode
-                      </div>
-                      <div style={{ fontSize: '10px', color: 'var(--color-text-muted)' }}>Standard Clean</div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'light' ? '#1E40AF' : 'var(--color-text-primary)' }}>
+                      Light Mode
                     </div>
+                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>Standard Clean</div>
                   </div>
 
-                  {/* Dark Mode */}
+                  {/* Dark Mode - TEXT ONLY */}
                   <div
                     onClick={() => onUpdateUser({ theme: 'dark' })}
                     style={{
-                      padding: '12px',
+                      padding: '14px 16px',
                       borderRadius: '14px',
                       border: currentTheme === 'dark' ? '2px solid #2563EB' : '1px solid var(--color-border)',
                       background: currentTheme === 'dark' ? '#1E293B' : 'var(--color-bg)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                      cursor: 'pointer'
                     }}
                   >
-                    <Moon size={18} color={currentTheme === 'dark' ? '#38BDF8' : 'var(--color-text-secondary)'} />
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: currentTheme === 'dark' ? '#38BDF8' : 'var(--color-text-primary)' }}>
-                        Dark Mode
-                      </div>
-                      <div style={{ fontSize: '10px', color: 'var(--color-text-muted)' }}>Midnight Sleek</div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'dark' ? '#38BDF8' : 'var(--color-text-primary)' }}>
+                      Dark Mode
                     </div>
+                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>Midnight Sleek</div>
                   </div>
                 </div>
               </div>
 
-              {/* 2. Primary Accent Color Selector */}
+              {/* 2. Custom Accent Color */}
               <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Sparkles size={16} color="#A855F7" /> Custom Accent Color
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
+                  Custom Accent Color
                 </h4>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {[
@@ -641,14 +603,14 @@ export default function AccountSettingsModal({
                         gap: '6px'
                       }}
                     >
-                      <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: item.color, display: 'inline-block', boxShadow: `0 2px 8px ${item.color}66` }} />
-                      <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{item.name}</span>
+                      <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: item.color, display: 'inline-block' }} />
+                      <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{item.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* 3. Dynamic Font Size */}
+              {/* 3. App Text Font Size */}
               <div>
                 <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
                   App Text Font Size
@@ -684,45 +646,37 @@ export default function AccountSettingsModal({
                 </div>
               </div>
 
-              {/* 4. App Icon Customizer */}
+              {/* 4. App Icon Theme */}
               <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Smartphone size={16} color="#0EA5E9" /> App Icon Theme
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
+                  App Icon Theme
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   {[
-                    { id: 'classic', title: 'Classic Royal', desc: 'Neptune Blue', bg: 'linear-gradient(135deg, #2563EB, #1D4ED8)' },
-                    { id: 'neon', title: 'Subsea Cyber', desc: 'Neon Cyan', bg: 'linear-gradient(135deg, #06B6D4, #3B82F6)' },
-                    { id: 'sunset', title: 'Sunset Glow', desc: 'Rose Amber', bg: 'linear-gradient(135deg, #F43F5E, #F59E0B)' },
-                    { id: 'obsidian', title: 'Obsidian Dark', desc: 'Dark Metal', bg: 'linear-gradient(135deg, #1E293B, #0F172A)' }
+                    { id: 'classic', title: 'Classic Royal', desc: 'Neptune Blue' },
+                    { id: 'neon', title: 'Subsea Cyber', desc: 'Neon Cyan' },
+                    { id: 'sunset', title: 'Sunset Glow', desc: 'Rose Amber' },
+                    { id: 'obsidian', title: 'Obsidian Dark', desc: 'Dark Metal' }
                   ].map((icon) => (
                     <div
                       key={icon.id}
                       onClick={() => setAppIcon(icon.id)}
                       style={{
-                        padding: '10px 12px',
+                        padding: '12px',
                         borderRadius: '14px',
                         border: appIcon === icon.id ? '2px solid #2563EB' : '1px solid var(--color-border)',
                         background: 'var(--color-bg)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px'
+                        cursor: 'pointer'
                       }}
                     >
-                      <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: icon.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF' }}>
-                        <Radio size={16} />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '12px', fontWeight: 700 }}>{icon.title}</div>
-                        <div style={{ fontSize: '10px', color: 'var(--color-text-secondary)' }}>{icon.desc}</div>
-                      </div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{icon.title}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>{icon.desc}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* 5. Interface Micro-Animations Toggle */}
+              {/* 5. Fluid Micro-Animations Toggle */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--color-bg)', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                 <div>
                   <div style={{ fontSize: '13px', fontWeight: 600 }}>Fluid Micro-Animations</div>
@@ -748,14 +702,14 @@ export default function AccountSettingsModal({
             </div>
           )}
 
-          {/* 🔐 SECURITY & PRIVACY (APP SECURITY) SUB-SECTION */}
+          {/* 🔐 SAFETY & PRIVACY SUB-SECTION (TEXT ONLY HEADERS & CARDS) */}
           {activeSection === 'security' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
-              {/* Password & Change Password Form */}
+              {/* Password Management Form */}
               <div style={{ background: 'var(--color-bg)', padding: '14px', borderRadius: '18px', border: '1px solid var(--color-border)' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Key size={16} color="#2563EB" /> Password Management
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '12px' }}>
+                  Password Management
                 </h4>
 
                 {passwordSuccessMsg && (
@@ -891,8 +845,7 @@ export default function AccountSettingsModal({
                       border: 'none',
                       fontSize: '13px',
                       fontWeight: 700,
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
+                      cursor: 'pointer'
                     }}
                   >
                     Change Password
@@ -900,12 +853,10 @@ export default function AccountSettingsModal({
                 </form>
               </div>
 
-              {/* Two-Factor Authentication (2FA) */}
+              {/* Two-Factor Authentication (2FA) - TEXT ONLY */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--color-bg)', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Shield size={16} color="#0EA5E9" /> Two-Factor Authentication (2FA)
-                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700 }}>Two-Factor Authentication (2FA)</div>
                   <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                     Requires authenticator app code on login
                   </div>
@@ -931,12 +882,10 @@ export default function AccountSettingsModal({
                 </button>
               </div>
 
-              {/* Biometrics & Passcode Lock */}
+              {/* Biometrics & Passcode Lock - TEXT ONLY */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--color-bg)', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Fingerprint size={16} color="#7C3AED" /> Biometric / PIN Lock
-                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700 }}>Biometric / PIN Lock</div>
                   <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                     Unlock app with Face ID or Fingerprint
                   </div>
@@ -989,12 +938,10 @@ export default function AccountSettingsModal({
                 </select>
               </div>
 
-              {/* Ghost Mode Toggle */}
+              {/* Ghost Mode Toggle - TEXT ONLY */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--color-bg)', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <EyeOff size={16} color="#64748B" /> Ghost Mode
-                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700 }}>Ghost Mode</div>
                   <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                     Hide online status and last seen timestamp
                   </div>
@@ -1020,19 +967,16 @@ export default function AccountSettingsModal({
                 </button>
               </div>
 
-              {/* Active Logged-In Devices */}
+              {/* Active Logged-In Devices - TEXT ONLY */}
               <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Monitor size={16} color="#10B981" /> Active Recognized Devices
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
+                  Active Recognized Devices
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--color-bg)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Smartphone size={18} color="#2563EB" />
-                      <div>
-                        <div style={{ fontSize: '12px', fontWeight: 700 }}>Android 14 App (This Device)</div>
-                        <div style={{ fontSize: '10px', color: '#16A34A', fontWeight: 600 }}>● Active Now</div>
-                      </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'var(--color-bg)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: 700 }}>Android 14 App (This Device)</div>
+                      <div style={{ fontSize: '11px', color: '#16A34A', fontWeight: 600, marginTop: '2px' }}>Active Now</div>
                     </div>
                   </div>
                 </div>
@@ -1253,7 +1197,6 @@ export default function AccountSettingsModal({
                   className={`btn ${panicActive ? 'btn-danger' : 'btn-secondary'}`}
                   style={{ padding: '8px 16px', fontSize: '12px' }}
                 >
-                  <ShieldAlert size={15} />
                   {panicActive ? 'PAUSED' : 'PAUSE'}
                 </button>
               </div>
@@ -1289,15 +1232,15 @@ export default function AccountSettingsModal({
             </div>
           )}
 
-          {/* ⚙️ ACCOUNT & STORAGE SUB-SECTION */}
+          {/* ⚙️ ACCOUNT & STORAGE SUB-SECTION (TEXT ONLY OPTIONS) */}
           {activeSection === 'account' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
               {/* Download My Data */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--color-bg)', borderRadius: '16px', border: '1px solid var(--color-border)' }}>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Download size={16} color="#2563EB" /> Download My Data
+                  <div style={{ fontSize: '14px', fontWeight: 700 }}>
+                    Download My Data
                   </div>
                   <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                     Export profile, posts and settings archive
@@ -1326,7 +1269,7 @@ export default function AccountSettingsModal({
               </div>
 
               {/* Clear App Cache */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--color-bg)', borderRadius: '16px', border: '1px solid var(--color-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--color-bg)', borderRadius: '14px', border: '1px solid var(--color-border)' }}>
                 <div>
                   <div style={{ fontSize: '14px', fontWeight: 700 }}>App Cache Storage</div>
                   <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
