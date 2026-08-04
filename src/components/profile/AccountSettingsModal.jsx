@@ -232,14 +232,14 @@ export default function AccountSettingsModal({
               <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: '20px' }}>
                 {activeSection === 'menu' && 'Account Settings & Privacy'}
                 {activeSection === 'personalization' && 'Personalization & Themes'}
-                {activeSection === 'security' && 'Security & Privacy (App Security)'}
+                {activeSection === 'security' && 'Safety & Privacy'}
                 {activeSection === 'discoverability' && 'Discoverability & Location'}
                 {activeSection === 'notifications' && 'Notifications & Preferences'}
                 {activeSection === 'safety' && 'Safety & Emergency Shield'}
                 {activeSection === 'account' && 'Account & Storage Controls'}
               </h3>
               <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>
-                {activeSection === 'menu' ? 'Manage display, app security, themes & controls' : 'Account Settings'}
+                {activeSection === 'menu' ? 'Manage display, safety & privacy, themes & controls' : 'Account Settings'}
               </span>
             </div>
           </div>
@@ -344,7 +344,7 @@ export default function AccountSettingsModal({
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-                      Security & Privacy (App Security)
+                      Safety & Privacy
                     </div>
                     <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                       Password, 2FA, Biometrics, Active Sessions & Ghost Mode
