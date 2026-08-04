@@ -209,12 +209,14 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
                   style={{
                     border: 'none',
                     background: 'transparent',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
                     color: 'var(--color-text-primary)',
                     fontSize: '14px',
                     fontWeight: 600,
                     outline: 'none',
                     cursor: 'pointer',
-                    paddingRight: '8px'
+                    paddingRight: '6px'
                   }}
                 >
                   <option value="+1">🇺🇸 +1</option>

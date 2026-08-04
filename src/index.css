@@ -57,15 +57,15 @@
   --color-primary-light: rgba(37, 99, 235, 0.2);
 }
 
-.dark-theme input {
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme select {
   color: #F8FAFC !important;
 }
 
-.dark-theme textarea,
-.dark-theme select {
+.dark-theme option {
   background-color: #161F30 !important;
   color: #F8FAFC !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .dark-theme .chip {
