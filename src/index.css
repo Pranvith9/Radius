@@ -43,46 +43,53 @@
   --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Theme Overrides */
+/* Dark Theme Overrides - Pure Neutral Dark Palette */
 .dark-theme {
-  --color-surface: #161F30;
-  --color-surface-hover: #1E2B42;
-  --color-bg: #0B0F17;
-  --color-border: rgba(255, 255, 255, 0.08);
-  
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-primary-light: rgba(37, 99, 235, 0.18);
+  --color-primary-ring: rgba(37, 99, 235, 0.25);
 
-  --color-primary-light: rgba(37, 99, 235, 0.2);
+  --color-surface: #121215;
+  --color-surface-hover: #1A1A1E;
+  --color-bg: #09090B;
+  --color-border: #27272A;
+  
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
+
+  --neptune-bg-warm: #09090B;
 }
 
 .dark-theme input,
 .dark-theme textarea,
 .dark-theme select {
-  color: #F8FAFC !important;
+  color: #FAFAFA !important;
+  background-color: #121215 !important;
+  border-color: #27272A !important;
 }
 
 .dark-theme option {
-  background-color: #161F30 !important;
-  color: #F8FAFC !important;
+  background-color: #121215 !important;
+  color: #FAFAFA !important;
 }
 
 .dark-theme .chip {
-  background-color: #161F30 !important;
-  color: #94A3B8 !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: #121215 !important;
+  color: #A1A1AA !important;
+  border-color: #27272A !important;
 }
 
 .dark-theme .neptune-gradient-shell-inner {
-  background-color: #161F30 !important;
-  color: #F8FAFC !important;
+  background-color: #121215 !important;
+  color: #FAFAFA !important;
 }
 
 .dark-theme .btn-secondary {
-  background-color: #161F30 !important;
-  color: #F8FAFC !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: #121215 !important;
+  color: #FAFAFA !important;
+  border-color: #27272A !important;
 }
 
 * {

@@ -220,14 +220,14 @@ export default function AccountSettingsModal({
               <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: '20px' }}>
                 {activeSection === 'menu' && 'Account Settings & Privacy'}
                 {activeSection === 'personalization' && 'Personalization & Themes'}
-                {activeSection === 'security' && 'Safety & Privacy'}
+                {activeSection === 'security' && 'Security & Privacy'}
                 {activeSection === 'discoverability' && 'Discoverability & Location'}
                 {activeSection === 'notifications' && 'Notifications & Preferences'}
                 {activeSection === 'safety' && 'Safety & Emergency Shield'}
                 {activeSection === 'account' && 'Account & Storage Controls'}
               </h3>
               <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>
-                {activeSection === 'menu' ? 'Manage display, safety & privacy, themes & controls' : 'Account Settings'}
+                {activeSection === 'menu' ? 'Manage display, security & privacy, themes & controls' : 'Account Settings'}
               </span>
             </div>
           </div>
@@ -298,7 +298,7 @@ export default function AccountSettingsModal({
                 <ChevronRight size={18} color="var(--color-text-muted)" />
               </button>
 
-              {/* 🔐 2. Safety & Privacy Button */}
+              {/* 🔐 2. Security & Privacy Button */}
               <button
                 onClick={() => setActiveSection('security')}
                 style={{
@@ -328,7 +328,7 @@ export default function AccountSettingsModal({
                   </div>
                   <div>
                     <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-                      Safety & Privacy
+                      Security & Privacy
                     </div>
                     <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
                       Password, 2FA, Biometrics, Active Sessions & Ghost Mode
@@ -752,7 +752,7 @@ export default function AccountSettingsModal({
             </div>
           )}
 
-          {/* 🔐 SAFETY & PRIVACY SUB-SECTION (TEXT ONLY HEADERS & CARDS) */}
+          {/* 🔐 SECURITY & PRIVACY SUB-SECTION (TEXT ONLY HEADERS & CARDS) */}
           {activeSection === 'security' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
