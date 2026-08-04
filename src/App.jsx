@@ -39,6 +39,7 @@ export default function App() {
 
   // App Navigation & Modals State
   const [activeTab, setActiveTab] = useState('nearby'); // 'nearby' | 'feed' | 'requests' | 'chats' | 'map' | 'profile'
+  const [previousTab, setPreviousTab] = useState('nearby');
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [requestPerson, setRequestPerson] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
@@ -129,14 +130,20 @@ export default function App() {
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
       const currentIndex = TAB_ORDER.indexOf(activeTab);
       if (currentIndex !== -1) {
-        if (deltaX < -50) {
-          if (currentIndex < TAB_ORDER.length - 1) {
-            setActiveTab(TAB_ORDER[currentIndex + 1]);
+        let newIndex = currentIndex;
+        if (deltaX < -50 && currentIndex < TAB_ORDER.length - 1) {
+          newIndex = currentIndex + 1;
+        } else if (deltaX > 50 && currentIndex > 0) {
+          newIndex = currentIndex - 1;
+        }
+        if (newIndex !== currentIndex) {
+          const nextTab = TAB_ORDER[newIndex];
+          if (activeTab !== 'profile' && nextTab === 'profile') {
+            setPreviousTab(activeTab);
+          } else if (nextTab !== 'profile' && activeTab !== 'profile') {
+            setPreviousTab(activeTab);
           }
-        } else if (deltaX > 50) {
-          if (currentIndex > 0) {
-            setActiveTab(TAB_ORDER[currentIndex - 1]);
-          }
+          setActiveTab(nextTab);
         }
       }
     }
@@ -410,6 +417,7 @@ export default function App() {
           onTogglePanic={handlePanicToggle}
           onOpenSafety={() => setIsSafetyTipsOpen(true)}
           onOpenProfile={() => {
+            if (activeTab !== 'profile') setPreviousTab(activeTab);
             setActiveTab('profile');
             setActiveChat(null);
           }}
@@ -502,7 +510,7 @@ export default function App() {
             panicActive={panicActive}
             onTogglePanic={handlePanicToggle}
             onSelectPerson={(person) => setSelectedPerson(person)}
-            onBack={() => setActiveTab('nearby')}
+            onBack={() => setActiveTab(previousTab || 'nearby')}
             onLogout={() => setIsAuthenticated(false)}
             userPosts={posts.filter((p) => p.author.id === currentUser.id)}
             onOpenCreatePost={handleOpenCreatePost}
@@ -513,6 +521,11 @@ export default function App() {
       <BottomNav
         activeTab={activeTab}
         onTabChange={(tab) => {
+          if (activeTab !== 'profile' && tab === 'profile') {
+            setPreviousTab(activeTab);
+          } else if (tab !== 'profile' && activeTab !== 'profile') {
+            setPreviousTab(activeTab);
+          }
           setActiveTab(tab);
           if (tab !== 'chats') setActiveChat(null);
         }}
