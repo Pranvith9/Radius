@@ -4,15 +4,111 @@ import {
   CheckCircle2, ShieldCheck, User, Calendar, Check, ChevronRight, ArrowLeft
 } from 'lucide-react';
 
+const INTEREST_GROUPS = [
+  {
+    category: "Activities & Outdoors",
+    icon: "🏕️",
+    items: ["Hiking", "Cycling", "Running", "Gym & Fitness", "Yoga", "Swimming", "Camping", "Photography", "Travel", "Road Trips"]
+  },
+  {
+    category: "Food & Drink",
+    icon: "☕",
+    items: ["Coffee", "Foodie", "Cooking", "Baking", "Street Food", "Wine Tasting", "Craft Beer", "Vegan/Vegetarian"]
+  },
+  {
+    category: "Arts & Culture",
+    icon: "🎨",
+    items: ["Movies", "Music", "Live Concerts", "Theatre", "Art & Design", "Reading", "Writing", "Museums", "Fashion"]
+  },
+  {
+    category: "Games & Tech",
+    icon: "🎮",
+    items: ["Gaming", "Board Games", "Chess", "Coding/Tech", "Startups", "AI & Innovation", "Anime"]
+  },
+  {
+    category: "Social & Lifestyle",
+    icon: "🤝",
+    items: ["Networking", "Volunteering", "Pets & Animals", "Meditation & Mindfulness", "Spirituality", "Languages", "Standup Comedy"]
+  },
+  {
+    category: "Sports",
+    icon: "⚽",
+    items: ["Football/Soccer", "Cricket", "Basketball", "Tennis", "Badminton", "Skating", "Martial Arts"]
+  },
+  {
+    category: "Learning & Growth",
+    icon: "📚",
+    items: ["Book Clubs", "Public Speaking", "Entrepreneurship", "Personal Finance", "Podcasts"]
+  }
+];
+
 const INTEREST_SPECIFIC_OPTIONS = {
-  Coffee: ['Indie Cafes', 'Pour-Over', 'Espresso', 'Cold Brew', 'Latte Art'],
-  Hiking: ['Trail Running', 'Backpacking', 'Camping', 'Peak Bagging', 'Nature Photo'],
-  Design: ['UI/UX', 'Architecture', 'Interior Design', 'Graphic Design', '3D Motion'],
-  Bouldering: ['Gym V-Routes', 'Outdoor Crags', 'Lead Climbing', 'Crag Trips'],
-  Photography: ['Film 35mm', 'Street Photo', 'Landscape', 'Portrait', 'Vintage Lenses'],
-  Music: ['Jazz Records', 'Indie Rock', 'Synthwave', 'Live Concerts', 'Vinyl Collecting'],
-  Fitness: ['Crossfit', 'Powerlifting', 'Calisthenics', 'Yoga & Stretch', 'Marathons'],
-  Foodie: ['Artisanal Pizza', 'Ramen Spots', 'Craft Beer', 'Plant-based', 'Wine Tasting']
+  // Activities & Outdoors
+  "Hiking": ["Trail Running", "Backpacking", "Peak Bagging", "Day Hikes"],
+  "Cycling": ["Road Biking", "Mountain Biking", "Commuting", "Bikepacking"],
+  "Running": ["5K / 10K", "Marathons", "Trail Runs", "Track & Field"],
+  "Gym & Fitness": ["Calisthenics", "Powerlifting", "CrossFit", "HIIT & Cardio"],
+  "Yoga": ["Vinyasa Flow", "Hot Yoga", "Ashtanga", "Restorative Yoga"],
+  "Swimming": ["Open Water", "Lap Swimming", "Triathlon Prep", "Scuba & Snorkel"],
+  "Camping": ["Wild Camping", "Glamping", "RV & Van Life", "Bushcraft"],
+  "Photography": ["Film 35mm", "Street Photo", "Landscape", "Portrait Photography"],
+  "Travel": ["Backpacking", "Cultural Escapes", "Solo Travel", "Luxury Travel"],
+  "Road Trips": ["Scenic Byways", "Overlanding", "Van Life", "Weekend Getaways"],
+
+  // Food & Drink
+  "Coffee": ["Indie Cafes", "Pour-Over", "Espresso", "Cold Brew"],
+  "Foodie": ["Artisanal Pizza", "Authentic Ramen", "Fine Dining", "Food Festivals"],
+  "Cooking": ["Italian & Pasta", "Asian Fusion", "Meal Prep", "Grilling & BBQ"],
+  "Baking": ["Sourdough", "Pastries & Cakes", "Desserts", "Artisan Bread"],
+  "Street Food": ["Night Markets", "Taco Crawls", "Local Eats", "Food Trucks"],
+  "Wine Tasting": ["Natural Wine", "Boutique Vineyards", "Food Pairings", "Sommelier Picks"],
+  "Craft Beer": ["IPAs & Stouts", "Microbreweries", "Homebrewing", "Taprooms"],
+  "Vegan/Vegetarian": ["Plant-Based Eats", "Raw Foods", "Clean Eating", "Vegan Baking"],
+
+  // Arts & Culture
+  "Movies": ["Indie Cinema", "Sci-Fi & Fantasy", "Cult Classics", "Documentaries"],
+  "Music": ["Indie Rock", "Jazz Records", "Synthwave", "Hip-Hop & R&B"],
+  "Live Concerts": ["Festivals", "Underground Venues", "Stadium Shows", "Acoustic Sets"],
+  "Theatre": ["Broadway Shows", "Improv", "Musical Theatre", "Fringe Fest"],
+  "Art & Design": ["UI/UX Design", "Modern Art", "Architecture", "Typography"],
+  "Reading": ["Sci-Fi & Fantasy", "Non-Fiction", "Biographies", "Classics"],
+  "Writing": ["Poetry", "Screenwriting", "Blogging", "Short Stories"],
+  "Museums": ["Modern Art", "History & Science", "Galleries", "Exhibitions"],
+  "Fashion": ["Streetwear", "Vintage & Thrift", "High Fashion", "Sustainable Styling"],
+
+  // Games & Tech
+  "Gaming": ["RPGs & Lore", "FPS Esports", "Co-Op Casual", "Retro Gaming"],
+  "Board Games": ["Strategy Eurogames", "Party Games", "Deckbuilders", "Catan & Carcassonne"],
+  "Chess": ["Rapid & Blitz", "Chess Puzzles", "Over-the-Board", "Bullet Chess"],
+  "Coding/Tech": ["Web Development", "Open Source", "Mobile Apps", "DevOps & Cloud"],
+  "Startups": ["SaaS & Apps", "Venture Capital", "Angel Investing", "Bootstrapping"],
+  "AI & Innovation": ["LLMs & Prompting", "Machine Learning", "Robotics", "Generative Art"],
+  "Anime": ["Shonen Action", "Slice of Life", "Cyberpunk Anime", "Studio Ghibli"],
+
+  // Social & Lifestyle
+  "Networking": ["Coffee Chats", "Industry Mixers", "Co-Working", "Founder Meetups"],
+  "Volunteering": ["Animal Rescues", "Community Cleanup", "Youth Mentorship", "Food Banks"],
+  "Pets & Animals": ["Dog Walking", "Cat Cafes", "Fostering", "Pet Rescues"],
+  "Meditation & Mindfulness": ["Breathwork", "Sound Baths", "Mindful Walking", "Vipassana"],
+  "Spirituality": ["Astrology", "Tarot Reading", "Philosophy", "Crystals & Energy"],
+  "Languages": ["Language Exchange", "Polyglot Meetups", "Duolingo Streaks", "Immersion"],
+  "Standup Comedy": ["Open Mics", "Comedy Clubs", "Improv Shows", "Roasts"],
+
+  // Sports
+  "Football/Soccer": ["Premier League", "Futsal & Turf", "Champions League", "World Cup"],
+  "Cricket": ["T20 & IPL", "Test Matches", "Weekend Nets", "Fantasy League"],
+  "Basketball": ["Pickup Games", "NBA Season", "Streetball 3v3", "Sneaker Culture"],
+  "Tennis": ["Singles Matches", "Grand Slams", "Club Tennis", "Pickleball"],
+  "Badminton": ["Doubles Matches", "Club Nets", "Tournament Play", "Casual Games"],
+  "Skating": ["Skateboarding", "Roller Skating", "Longboarding", "Ice Skating"],
+  "Martial Arts": ["Brazilian Jiu-Jitsu", "Muay Thai", "Boxing", "Judo & Karate"],
+
+  // Learning & Growth
+  "Book Clubs": ["Monthly Reads", "Sci-Fi Clubs", "Non-Fiction Discussions", "Author Q&As"],
+  "Public Speaking": ["Toastmasters", "Keynotes & Panels", "Storytelling", "Debate"],
+  "Entrepreneurship": ["Side Hustles", "E-Commerce", "Product Building", "Bootstrapping"],
+  "Personal Finance": ["Investing & Stocks", "FIRE Movement", "Real Estate", "Budgeting"],
+  "Podcasts": ["True Crime", "Tech & Business", "Storytelling", "Self-Improvement"]
 };
 
 export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
@@ -699,31 +795,55 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
               />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-secondary)' }}>MAIN INTERESTS</label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {Object.keys(INTEREST_SPECIFIC_OPTIONS).map((category) => {
-                  const active = selectedInterests.includes(category);
-                  return (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => toggleInterest(category)}
-                      style={{
-                        padding: '6px 12px',
-                        borderRadius: '9999px',
-                        background: active ? 'var(--color-primary)' : 'var(--color-bg)',
-                        color: active ? '#FFFFFF' : 'var(--color-text-secondary)',
-                        border: active ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {active ? `✓ ${category}` : category}
-                    </button>
-                  );
-                })}
+            {/* MAIN INTEREST CATEGORIES GROUPED BY DOMAIN */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-secondary)' }}>
+                  SELECT INTERESTS ({selectedInterests.length} selected)
+                </label>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                maxHeight: '230px',
+                overflowY: 'auto',
+                paddingRight: '4px'
+              }}>
+                {INTEREST_GROUPS.map((group) => (
+                  <div key={group.category} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{group.icon}</span> {group.category}
+                    </span>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                      {group.items.map((item) => {
+                        const active = selectedInterests.includes(item);
+                        return (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => toggleInterest(item)}
+                            style={{
+                              padding: '5px 11px',
+                              borderRadius: '9999px',
+                              background: active ? 'var(--color-primary)' : 'var(--color-bg)',
+                              color: active ? '#FFFFFF' : 'var(--color-text-secondary)',
+                              border: active ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              transition: 'all 120ms ease'
+                            }}
+                          >
+                            {active ? `✓ ${item}` : item}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
