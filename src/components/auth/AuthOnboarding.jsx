@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Waves, Phone, ShieldCheck, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
+import { Radio, Phone, ShieldCheck, ArrowRight, KeyRound, CheckCircle2, LocateFixed } from 'lucide-react';
 
 export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
   const [step, setStep] = useState(1); // 1: Phone Number Input, 2: OTP Verification, 3: Profile Info for New Account
@@ -155,33 +155,29 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
           background: 'var(--color-surface)',
           color: 'var(--color-text-primary)'
         }}>
-          {/* Brand Header & App Logo */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+          {/* Radius Brand Header & Sleek Radius Radar Icon */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '80px',
-              height: '80px',
+              width: '76px',
+              height: '76px',
               borderRadius: '24px',
-              overflow: 'hidden',
-              boxShadow: '0 8px 24px rgba(37, 99, 235, 0.35)',
-              border: '2px solid rgba(255, 255, 255, 0.8)',
-              background: '#0F172A',
+              background: 'linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)',
+              boxShadow: '0 8px 24px rgba(37, 99, 235, 0.4)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              position: 'relative'
             }}>
-              <img
-                src="/logo.png"
-                alt="Neptune Base Logo"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
+              <LocateFixed size={38} strokeWidth={2.2} />
             </div>
 
             <div>
-              <h1 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text-primary)', letterSpacing: '-0.02em', lineHeight: '26px' }}>
-                Neptune Base
+              <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-text-primary)', letterSpacing: '-0.03em', lineHeight: '28px' }}>
+                Radius
               </h1>
-              <p style={{ fontSize: '12px', fontWeight: 600, color: '#2563EB', marginTop: '2px' }}>
-                Seamless Subsea Social Discovery
+              <p style={{ fontSize: '12px', fontWeight: 600, color: '#2563EB', marginTop: '3px' }}>
+                Nearby Social & Location Discovery
               </p>
             </div>
           </div>

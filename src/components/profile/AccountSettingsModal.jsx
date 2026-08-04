@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import {
   X,
@@ -14,7 +16,11 @@ import {
   Eye,
   EyeOff,
   LogOut,
-  Trash2
+  Trash2,
+  LocateFixed,
+  Radio,
+  Compass,
+  Target
 } from 'lucide-react';
 
 export default function AccountSettingsModal({
@@ -649,30 +655,52 @@ export default function AccountSettingsModal({
               {/* 4. App Icon Theme */}
               <div>
                 <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '10px' }}>
-                  App Icon Theme
+                  Radius App Icon Theme
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   {[
-                    { id: 'classic', title: 'Classic Royal', desc: 'Neptune Blue' },
-                    { id: 'neon', title: 'Subsea Cyber', desc: 'Neon Cyan' },
-                    { id: 'sunset', title: 'Sunset Glow', desc: 'Rose Amber' },
-                    { id: 'obsidian', title: 'Obsidian Dark', desc: 'Dark Metal' }
-                  ].map((icon) => (
-                    <div
-                      key={icon.id}
-                      onClick={() => setAppIcon(icon.id)}
-                      style={{
-                        padding: '12px',
-                        borderRadius: '14px',
-                        border: appIcon === icon.id ? '2px solid #2563EB' : '1px solid var(--color-border)',
-                        background: 'var(--color-bg)',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{icon.title}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>{icon.desc}</div>
-                    </div>
-                  ))}
+                    { id: 'classic', title: 'Radius Royal', desc: 'Primary Radar', icon: LocateFixed, bg: 'linear-gradient(135deg, #2563EB, #1D4ED8)' },
+                    { id: 'neon', title: 'Radius Pulse', desc: 'Cyan Pulse', icon: Radio, bg: 'linear-gradient(135deg, #06B6D4, #3B82F6)' },
+                    { id: 'emerald', title: 'Radius Emerald', desc: 'Mint Radar', icon: Compass, bg: 'linear-gradient(135deg, #10B981, #059669)' },
+                    { id: 'obsidian', title: 'Radius Obsidian', desc: 'Dark Metal', icon: Target, bg: 'linear-gradient(135deg, #1E293B, #0F172A)' }
+                  ].map((iconItem) => {
+                    const IconComponent = iconItem.icon;
+                    return (
+                      <div
+                        key={iconItem.id}
+                        onClick={() => setAppIcon(iconItem.id)}
+                        style={{
+                          padding: '12px',
+                          borderRadius: '14px',
+                          border: appIcon === iconItem.id ? '2px solid #2563EB' : '1px solid var(--color-border)',
+                          background: 'var(--color-bg)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px'
+                        }}
+                      >
+                        <div style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '10px',
+                          background: iconItem.bg,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#FFFFFF',
+                          flexShrink: 0,
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+                        }}>
+                          <IconComponent size={20} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{iconItem.title}</div>
+                          <div style={{ fontSize: '10px', color: 'var(--color-text-secondary)', marginTop: '1px' }}>{iconItem.desc}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
