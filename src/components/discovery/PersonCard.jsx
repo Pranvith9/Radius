@@ -68,7 +68,7 @@ export default function PersonCard({
           gap: '6px'
         }}>
           <div className="distance-pill" style={{ fontSize: compact ? '11px' : '12px', padding: '3px 9px' }}>
-            <MapPin size={compact ? 10 : 12} />
+            <MapPin size={compact ? 10 : 12} color="#FFFFFF" />
             <span>{targetPerson.distance}</span>
           </div>
 

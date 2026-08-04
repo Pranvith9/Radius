@@ -120,7 +120,7 @@ export default function ShortsAndPostsFeed({
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
                         <span className="distance-pill" style={{ fontSize: '11px', padding: '2px 6px' }}>
-                          <MapPin size={10} />
+                          <MapPin size={10} color="#FFFFFF" />
                           ~{author.distance}
                         </span>
                         <span style={{ fontSize: '11px', color: '#94A3B8' }}>{post.createdAt}</span>
