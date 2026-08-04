@@ -23,7 +23,7 @@ export default function AndroidFrame({ children, theme = 'light' }) {
       minHeight: '100vh',
       height: '100vh',
       width: '100vw',
-      background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+      background: 'radial-gradient(circle at center, #18181B 0%, #09090B 100%)',
       overflow: 'hidden',
       padding: '12px'
     }}>
@@ -35,9 +35,9 @@ export default function AndroidFrame({ children, theme = 'light' }) {
           width: 'min(415px, 100%)',
           height: 'min(840px, 100%)',
           maxHeight: '100%',
-          background: isDark ? '#0F172A' : '#FFFFFF',
+          background: isDark ? '#09090B' : '#FFFFFF',
           borderRadius: '36px',
-          boxShadow: '0 0 0 10px #1E293B, 0 20px 50px rgba(15, 23, 42, 0.7)',
+          boxShadow: '0 0 0 10px #18181B, 0 25px 60px rgba(0, 0, 0, 0.8)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -47,17 +47,17 @@ export default function AndroidFrame({ children, theme = 'light' }) {
         {/* Native Android Status Bar */}
         <div style={{
           height: '36px',
-          background: isDark ? '#0F172A' : '#FFFFFF',
+          background: isDark ? '#09090B' : '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 20px',
           fontSize: '12px',
           fontWeight: 600,
-          color: isDark ? '#F8FAFC' : '#0F172A',
+          color: isDark ? '#FAFAFA' : '#0F172A',
           zIndex: 90,
           userSelect: 'none',
-          borderBottom: isDark ? '1px solid #1E293B' : '1px solid #F1F5F9',
+          borderBottom: isDark ? '1px solid #27272A' : '1px solid #F1F5F9',
           transition: 'background 250ms ease'
         }}>
           <span>{currentTime || '09:41'}</span>
@@ -67,8 +67,8 @@ export default function AndroidFrame({ children, theme = 'light' }) {
             width: '12px',
             height: '12px',
             borderRadius: '50%',
-            background: isDark ? '#334155' : '#0F172A',
-            border: '1px solid #1E293B'
+            background: isDark ? '#27272A' : '#000000',
+            border: '1px solid #18181B'
           }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -93,19 +93,19 @@ export default function AndroidFrame({ children, theme = 'light' }) {
         {/* Native Android Gesture Navigation Bar */}
         <div style={{
           height: '18px',
-          background: isDark ? '#0F172A' : '#FFFFFF',
+          background: isDark ? '#09090B' : '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 90,
-          borderTop: isDark ? '1px solid #1E293B' : '1px solid #F1F5F9',
+          borderTop: isDark ? '1px solid #27272A' : '1px solid #F1F5F9',
           transition: 'background 250ms ease'
         }}>
           <div style={{
             width: '110px',
             height: '4px',
             borderRadius: '2px',
-            background: isDark ? '#475569' : '#CBD5E1'
+            background: isDark ? '#3F3F46' : '#CBD5E1'
           }} />
         </div>
       </div>

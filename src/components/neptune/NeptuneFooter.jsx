@@ -4,9 +4,9 @@ import { Waves, ShieldCheck, Radio, CheckCircle } from 'lucide-react';
 export default function NeptuneFooter() {
   return (
     <footer style={{
-      background: '#0F172A',
-      color: '#F8FAFC',
-      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+      background: '#09090B',
+      color: '#FAFAFA',
+      borderTop: '1px solid #27272A',
       padding: '40px 24px 32px 24px',
       marginTop: '40px'
     }}>

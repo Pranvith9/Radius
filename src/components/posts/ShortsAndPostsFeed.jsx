@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, Play, Plus, MapPin, Check, Video, Image, User } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Play, Plus, MapPin, Check, Video, Image, User, Maximize2 } from 'lucide-react';
+import FullPostViewerModal from './FullPostViewerModal';
 
 export default function ShortsAndPostsFeed({
   posts,
@@ -8,6 +9,7 @@ export default function ShortsAndPostsFeed({
   onOpenCreatePost
 }) {
   const [filterType, setFilterType] = useState('all'); // 'all' | 'short' | 'photo'
+  const [fullScreenPostId, setFullScreenPostId] = useState(null);
 
   const filteredPosts = posts.filter((p) => {
     if (filterType === 'short') return p.type === 'short';
@@ -41,7 +43,7 @@ export default function ShortsAndPostsFeed({
             Nearby Public Feed & Shorts
           </h2>
           <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-            Public moments and video shorts from nearby people
+            Tap any post for mobile full-screen view & vertical scroll
           </p>
         </div>
 
@@ -137,9 +139,9 @@ export default function ShortsAndPostsFeed({
                   </button>
                 </div>
 
-                {/* Media Container (Video Short vs Photo) */}
+                {/* Media Container (Click to Open Full View) */}
                 <div
-                  onClick={() => onSelectPerson(author)}
+                  onClick={() => setFullScreenPostId(post.id)}
                   style={{
                     position: 'relative',
                     width: '100%',
@@ -155,6 +157,23 @@ export default function ShortsAndPostsFeed({
                     alt="Post media"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
+
+                  {/* Expand Full-Screen Indicator */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    background: 'rgba(15, 23, 42, 0.75)',
+                    color: '#FFFFFF',
+                    padding: '6px',
+                    borderRadius: '50%',
+                    backdropFilter: 'blur(6px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Maximize2 size={14} />
+                  </div>
 
                   {/* Play Overlay for Video Shorts */}
                   {post.type === 'short' && (
@@ -221,8 +240,11 @@ export default function ShortsAndPostsFeed({
                   )}
                 </div>
 
-                {/* Caption */}
-                <p style={{ fontSize: '14px', color: '#0F172A', lineHeight: '20px' }}>
+                {/* Caption (Tapping opens Full View) */}
+                <p
+                  onClick={() => setFullScreenPostId(post.id)}
+                  style={{ fontSize: '14px', color: '#0F172A', lineHeight: '20px', cursor: 'pointer' }}
+                >
                   {post.caption}
                 </p>
 
@@ -254,14 +276,30 @@ export default function ShortsAndPostsFeed({
                       <span>{post.likesCount}</span>
                     </button>
 
-                    {/* Comment Counter */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748B', fontSize: '13px', fontWeight: 500 }}>
+                    {/* Comment Counter (Tapping opens Full View with Comments) */}
+                    <button
+                      onClick={() => setFullScreenPostId(post.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#64748B',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        cursor: 'pointer'
+                      }}
+                    >
                       <MessageCircle size={18} />
                       <span>{post.commentsCount}</span>
-                    </div>
+                    </button>
                   </div>
 
-                  <button style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer' }}>
+                  <button
+                    onClick={() => setFullScreenPostId(post.id)}
+                    style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer' }}
+                  >
                     <Share2 size={18} />
                   </button>
                 </div>
@@ -270,6 +308,18 @@ export default function ShortsAndPostsFeed({
           );
         })}
       </div>
+
+      {/* Full-Screen Mobile Post Viewer Modal */}
+      {fullScreenPostId !== null && (
+        <FullPostViewerModal
+          posts={filteredPosts}
+          initialPostId={fullScreenPostId}
+          onClose={() => setFullScreenPostId(null)}
+          onLikePost={onLikePost}
+          onSelectPerson={onSelectPerson}
+        />
+      )}
     </div>
   );
 }
+

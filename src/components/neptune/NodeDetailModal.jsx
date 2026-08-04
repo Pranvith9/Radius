@@ -6,7 +6,7 @@ export default function NodeDetailModal({ node, onClose, onPingNode }) {
 
   return (
     <div style={{
-      position: 'fixed',
+      position: 'absolute',
       inset: 0,
       zIndex: 200,
       background: 'rgba(15, 23, 42, 0.6)',
