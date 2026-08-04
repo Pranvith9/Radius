@@ -128,8 +128,7 @@ export default function ProfileView({
       </div>
 
       {/* Main Profile Details Card */}
-      <div className="neptune-gradient-shell">
-        <div className="neptune-gradient-shell-inner" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ background: 'var(--color-surface)', borderRadius: '24px', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-card)', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* Clickable Profile Avatar with Proper Edit Camera Badge */}
             <div
@@ -286,7 +285,6 @@ export default function ProfileView({
             </div>
           </div>
         </div>
-      </div>
 
       {/* Single Clean "+ Create New Post" Button */}
       <button
