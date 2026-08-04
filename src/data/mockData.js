@@ -12,7 +12,8 @@ export const CURRENT_USER = {
   phoneVerified: true,
   radius: "5 km",
   readReceipts: true,
-  vacationMode: false
+  vacationMode: false,
+  theme: "dark"
 };
 
 export const NEARBY_USERS = [

@@ -149,7 +149,7 @@ export default function AccountSettingsModal({
     setTimeout(() => setCacheCleared(false), 3000);
   };
 
-  const currentTheme = currentUser.theme || 'light';
+  const currentTheme = currentUser.theme || 'dark';
 
   return (
     <div
@@ -540,38 +540,60 @@ export default function AccountSettingsModal({
                   Display Themes
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  {/* Light Mode - TEXT ONLY */}
+                  {/* Light Mode - TEXT ONLY WITH ACTIVE STATUS */}
                   <div
                     onClick={() => onUpdateUser({ theme: 'light' })}
                     style={{
                       padding: '14px 16px',
-                      borderRadius: '14px',
+                      borderRadius: '16px',
                       border: currentTheme === 'light' ? '2px solid #2563EB' : '1px solid var(--color-border)',
-                      background: currentTheme === 'light' ? '#DBEAFE' : 'var(--color-bg)',
-                      cursor: 'pointer'
+                      background: currentTheme === 'light' ? 'rgba(37, 99, 235, 0.12)' : 'var(--color-bg)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      transition: 'all 150ms ease'
                     }}
                   >
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'light' ? '#1E40AF' : 'var(--color-text-primary)' }}>
-                      Light Mode
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'light' ? '#2563EB' : 'var(--color-text-primary)' }}>
+                        Light Mode
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>Standard Clean</div>
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>Standard Clean</div>
+                    {currentTheme === 'light' && (
+                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#2563EB', marginTop: '8px', display: 'inline-block' }}>
+                        ✓ Active
+                      </span>
+                    )}
                   </div>
 
-                  {/* Dark Mode - TEXT ONLY */}
+                  {/* Dark Mode - TEXT ONLY WITH ACTIVE STATUS */}
                   <div
                     onClick={() => onUpdateUser({ theme: 'dark' })}
                     style={{
                       padding: '14px 16px',
-                      borderRadius: '14px',
+                      borderRadius: '16px',
                       border: currentTheme === 'dark' ? '2px solid #2563EB' : '1px solid var(--color-border)',
-                      background: currentTheme === 'dark' ? '#1E293B' : 'var(--color-bg)',
-                      cursor: 'pointer'
+                      background: currentTheme === 'dark' ? 'rgba(37, 99, 235, 0.12)' : 'var(--color-bg)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      transition: 'all 150ms ease'
                     }}
                   >
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'dark' ? '#38BDF8' : 'var(--color-text-primary)' }}>
-                      Dark Mode
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: currentTheme === 'dark' ? '#38BDF8' : 'var(--color-text-primary)' }}>
+                        Dark Mode
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>Midnight Sleek</div>
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>Midnight Sleek</div>
+                    {currentTheme === 'dark' && (
+                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#38BDF8', marginTop: '8px', display: 'inline-block' }}>
+                        ✓ Active
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
