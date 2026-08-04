@@ -194,20 +194,27 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
               <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
                 PHONE NUMBER
               </label>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: '16px',
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)',
+                padding: '2px 14px',
+                overflow: 'hidden'
+              }}>
                 <select
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
                   style={{
-                    padding: '12px 10px',
-                    borderRadius: '14px',
-                    border: '1px solid var(--color-border)',
-                    background: 'var(--color-bg)',
+                    border: 'none',
+                    background: 'transparent',
                     color: 'var(--color-text-primary)',
                     fontSize: '14px',
                     fontWeight: 600,
                     outline: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    paddingRight: '8px'
                   }}
                 >
                   <option value="+1">🇺🇸 +1</option>
@@ -217,34 +224,25 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
                   <option value="+81">🇯🇵 +81</option>
                 </select>
 
-                <div style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '0 14px',
-                  borderRadius: '14px',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-bg)'
-                }}>
-                  <Phone size={16} color="var(--color-text-secondary)" />
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="Mobile number"
-                    required
-                    style={{
-                      width: '100%',
-                      border: 'none',
-                      background: 'transparent',
-                      color: 'var(--color-text-primary)',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      outline: 'none'
-                    }}
-                  />
-                </div>
+                <div style={{ width: '1px', height: '22px', background: 'var(--color-border)', margin: '0 8px' }} />
+
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter mobile number"
+                  required
+                  style={{
+                    flex: 1,
+                    padding: '12px 0',
+                    border: 'none',
+                    background: 'transparent',
+                    color: 'var(--color-text-primary)',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    outline: 'none'
+                  }}
+                />
               </div>
             </div>
 
