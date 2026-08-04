@@ -4,9 +4,20 @@ import {
   CheckCircle2, ShieldCheck, User, Calendar, Check, ChevronRight, ArrowLeft
 } from 'lucide-react';
 
+const INTEREST_SPECIFIC_OPTIONS = {
+  Coffee: ['Indie Cafes', 'Pour-Over', 'Espresso', 'Cold Brew', 'Latte Art'],
+  Hiking: ['Trail Running', 'Backpacking', 'Camping', 'Peak Bagging', 'Nature Photo'],
+  Design: ['UI/UX', 'Architecture', 'Interior Design', 'Graphic Design', '3D Motion'],
+  Bouldering: ['Gym V-Routes', 'Outdoor Crags', 'Lead Climbing', 'Crag Trips'],
+  Photography: ['Film 35mm', 'Street Photo', 'Landscape', 'Portrait', 'Vintage Lenses'],
+  Music: ['Jazz Records', 'Indie Rock', 'Synthwave', 'Live Concerts', 'Vinyl Collecting'],
+  Fitness: ['Crossfit', 'Powerlifting', 'Calisthenics', 'Yoga & Stretch', 'Marathons'],
+  Foodie: ['Artisanal Pizza', 'Ramen Spots', 'Craft Beer', 'Plant-based', 'Wine Tasting']
+};
+
 export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
   const [authMode, setAuthMode] = useState('phone'); // 'phone' | 'email'
-  const [step, setStep] = useState(1); // 1: Credentials, 2: OTP Verification, 3: New Profile Onboarding
+  const [step, setStep] = useState(1); // 1: Credentials, 2: OTP, 3: Profile Overview & Interests, 4: Specific Options Page
   
   // Phone State
   const [countryCode, setCountryCode] = useState('+1');
@@ -26,6 +37,11 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('24');
   const [selectedInterests, setSelectedInterests] = useState(['Coffee', 'Design', 'Hiking']);
+  const [selectedSubOptions, setSelectedSubOptions] = useState({
+    Coffee: ['Indie Cafes', 'Cold Brew'],
+    Hiking: ['Backpacking'],
+    Design: ['UI/UX']
+  });
   
   const [errorMsg, setErrorMsg] = useState('');
   const [infoMsg, setInfoMsg] = useState('');
@@ -149,28 +165,59 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
     }
   };
 
-  // Complete New Profile Setup
-  const handleCompleteProfile = (e) => {
+  // Step 3 -> Advance to Step 4 (Specific Options Page)
+  const handleGoToSpecificOptions = (e) => {
     e.preventDefault();
     if (!name.trim()) {
       setErrorMsg('Please enter your full name.');
       return;
     }
+    if (selectedInterests.length === 0) {
+      setErrorMsg('Please select at least one interest category.');
+      return;
+    }
+
+    setErrorMsg('');
+    setStep(4);
+  };
+
+  // Step 4 -> Complete Onboarding
+  const handleFinalSubmit = (e) => {
+    e.preventDefault();
+    const allSpecificSubPreferences = Object.values(selectedSubOptions).flat();
 
     onCompleteAuth({
       phone: fullPhone,
       name: name.trim(),
       age: parseInt(age, 10) || 24,
-      interests: selectedInterests
+      interests: selectedInterests,
+      specificPreferences: allSpecificSubPreferences
     });
   };
 
   const toggleInterest = (interest) => {
     if (selectedInterests.includes(interest)) {
       setSelectedInterests(selectedInterests.filter((i) => i !== interest));
-    } else if (selectedInterests.length < 5) {
+    } else if (selectedInterests.length < 6) {
       setSelectedInterests([...selectedInterests, interest]);
     }
+  };
+
+  const toggleSubOption = (category, option) => {
+    setSelectedSubOptions((prev) => {
+      const currentList = prev[category] || [];
+      if (currentList.includes(option)) {
+        return {
+          ...prev,
+          [category]: currentList.filter((o) => o !== option)
+        };
+      } else {
+        return {
+          ...prev,
+          [category]: [...currentList, option]
+        };
+      }
+    });
   };
 
   return (
@@ -599,9 +646,9 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
           </form>
         )}
 
-        {/* STEP 3: PROFILE SETUP */}
+        {/* STEP 3: PROFILE OVERVIEW & MAIN INTERESTS */}
         {step === 3 && (
-          <form onSubmit={handleCompleteProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <form onSubmit={handleGoToSpecificOptions} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <h2 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
                 Complete your profile
@@ -653,15 +700,15 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-secondary)' }}>INTERESTS</label>
+              <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-secondary)' }}>MAIN INTERESTS</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {['Coffee', 'Hiking', 'Design', 'Bouldering', 'Photography', 'Music'].map((item) => {
-                  const active = selectedInterests.includes(item);
+                {Object.keys(INTEREST_SPECIFIC_OPTIONS).map((category) => {
+                  const active = selectedInterests.includes(category);
                   return (
                     <button
-                      key={item}
+                      key={category}
                       type="button"
-                      onClick={() => toggleInterest(item)}
+                      onClick={() => toggleInterest(category)}
                       style={{
                         padding: '6px 12px',
                         borderRadius: '9999px',
@@ -673,7 +720,7 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
                         cursor: 'pointer'
                       }}
                     >
-                      {active ? `✓ ${item}` : item}
+                      {active ? `✓ ${category}` : category}
                     </button>
                   );
                 })}
@@ -698,10 +745,131 @@ export default function AuthOnboarding({ existingUsers = [], onCompleteAuth }) {
                 fontSize: '14px',
                 fontWeight: 700,
                 cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
                 boxShadow: '0 4px 14px rgba(37, 99, 235, 0.35)'
               }}
             >
-              Get Started
+              <span>Next: Specific Options</span>
+              <ArrowRight size={16} />
+            </button>
+          </form>
+        )}
+
+        {/* STEP 4: DEDICATED SPECIFIC OPTIONS PAGE */}
+        {step === 4 && (
+          <form onSubmit={handleFinalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                style={{ background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <div>
+                <h2 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                  Specific Preferences
+                </h2>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                  Pick specific options for your interests
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              maxHeight: '300px',
+              overflowY: 'auto',
+              paddingRight: '4px'
+            }}>
+              {selectedInterests.map((category) => {
+                const options = INTEREST_SPECIFIC_OPTIONS[category] || [];
+                const activeSubList = selectedSubOptions[category] || [];
+
+                return (
+                  <div
+                    key={category}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                      background: 'var(--color-bg)',
+                      padding: '14px',
+                      borderRadius: '16px',
+                      border: '1px solid var(--color-border)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                        {category}
+                      </span>
+                      <span style={{ fontSize: '11px', color: 'var(--color-primary)', fontWeight: 600 }}>
+                        {activeSubList.length} picked
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {options.map((opt) => {
+                        const isSubActive = activeSubList.includes(opt);
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => toggleSubOption(category, opt)}
+                            style={{
+                              padding: '5px 12px',
+                              borderRadius: '10px',
+                              background: isSubActive ? 'var(--color-primary-light)' : 'var(--color-surface)',
+                              color: isSubActive ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                              border: isSubActive ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              transition: 'all 150ms ease'
+                            }}
+                          >
+                            {isSubActive ? `✓ ${opt}` : opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {errorMsg && (
+              <div style={{ fontSize: '12px', color: '#EF4444' }}>
+                {errorMsg}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              style={{
+                width: '100%',
+                padding: '13px',
+                borderRadius: '14px',
+                background: 'var(--color-primary)',
+                color: '#FFFFFF',
+                border: 'none',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 14px rgba(37, 99, 235, 0.35)'
+              }}
+            >
+              <span>Get Started</span>
+              <ArrowRight size={16} />
             </button>
           </form>
         )}

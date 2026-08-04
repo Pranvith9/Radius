@@ -375,16 +375,28 @@ export default function App() {
             );
 
             if (matchedUser) {
-              setCurrentUser({ ...matchedUser, visibility: false });
+              const updatedInterests = authData.interests && authData.interests.length > 0 
+                ? [...new Set([...(authData.interests || []), ...(authData.specificPreferences || [])])]
+                : matchedUser.interests;
+
+              setCurrentUser({ 
+                ...matchedUser, 
+                interests: updatedInterests,
+                visibility: false 
+              });
             } else {
+              const combinedInterests = authData.interests && authData.interests.length > 0 
+                ? [...new Set([...(authData.interests || []), ...(authData.specificPreferences || [])])]
+                : ["Coffee", "Music", "Travel"];
+
               const newUser = {
                 id: `usr_${Date.now()}`,
                 name: authData.name || 'User',
                 age: authData.age || 24,
                 phone: authData.phone,
                 photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600",
-                bio: "Newly joined Nearby user! Ready to discover nearby connections.",
-                interests: ["Coffee", "Music", "Travel"],
+                bio: `Passionate about ${combinedInterests.slice(0, 3).join(', ')}!`,
+                interests: combinedInterests,
                 privacyMode: "public",
                 visibility: false,
                 isVerified: false,
